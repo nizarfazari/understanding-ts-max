@@ -1,18 +1,22 @@
-console.log("Your code goes here");
-function add(n1, n2, showResult, phrasa) {
-    // jika mengggunakan javascript
-    //   if (typeof n1 !== "number" && typeof n1 !== "number") {
-    //     throw new Error("Incorect input!");
-    //   }
-    if (showResult) {
-        console.log(phrasa + n1 + n2);
-    }
-    else {
-        return n1 + n2;
-    }
+// const person: {
+//     name: string;
+//     age: number;
+//   } = {
+//     name: "Nizar",
+//     age: 20,
+//   };
+// const person = {
+//   name: "Nizar",
+//   age: 20,
+// };
+var person = {
+    name: "Nizar",
+    age: 20,
+    sports: ["Basketball", "Cooking"],
+};
+var favoriteActivities;
+favoriteActivities = ["Sprots"];
+for (var _i = 0, favoriteActivities_1 = favoriteActivities; _i < favoriteActivities_1.length; _i++) {
+    var hobby = favoriteActivities_1[_i];
+    console.log(hobby);
 }
-var number1 = 5;
-var number2 = 2.8;
-var showResult = true;
-var resultPhrase = "Result is : ";
-console.log(add(number1, number2, showResult, resultPhrase));
