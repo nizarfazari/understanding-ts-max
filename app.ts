@@ -1,22 +1,17 @@
-console.log("Your code goes here");
+let userInput: unknown;
+let userName: string;
 
-function add(n1: number, n2: number, showResult: boolean, phrasa: string) {
-  // jika mengggunakan javascript
-  //   if (typeof n1 !== "number" && typeof n1 !== "number") {
-  //     throw new Error("Incorect input!");
-  //   }
-  const result = n1 + n2;
-  if (showResult) {
-    // semuanya akan di konversi ke string hasilnya : 52.8
-    // console.log(phrasa + n1 + n2);
-    console.log(phrasa + result);
-  } else {
-    return result;
-  }
+userInput = 5;
+userInput = "Nizar";
+
+// userName = userInput // akan error karena type unknown
+
+if (typeof userInput === "string") {
+  userName = userInput;
 }
 
-const number1 = 5;
-const number2 = 2.8;
-const showResult = true;
-const resultPhrase = "Result is : ";
-console.log(add(number1, number2, showResult, resultPhrase));
+function generatorError(message: string, code: number): never {
+  throw { message: message, errorCode: code };
+}
+
+generatorError("An error code ", 500);
