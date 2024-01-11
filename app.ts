@@ -48,4 +48,4 @@ console.log(addNumbers);
 const [hobby1, hobby2, ...remainingHobbies] = hobbies;
 
 const { name: userNames, age } = person;
-console.log(userNames)
+console.log(userNames);
