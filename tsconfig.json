@@ -1,6 +1,6 @@
 {
-  "exclude": ["node_modules", "typescript-basic/*" ,"typescript-compiler/*"],
-  "include": ["app.ts"],
+  "exclude": ["node_modules", "typescript-basic/*" ,"typescript-compiler/* " ,"typescript-generation/* "],
+  "include": ["typescript-generation/app.ts"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
