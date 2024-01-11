@@ -34,3 +34,11 @@ const person = {
 const copiedPerson = {
   ...person,
 };
+
+// Rest Parameter
+const addRestParams = (...numbers: number[]) => {
+  return numbers.reduce((curRes, curVal) => curRes + curVal, 0);
+};
+
+const addNumbers = addRestParams(5, 10, 2);
+console.log(addNumbers);
