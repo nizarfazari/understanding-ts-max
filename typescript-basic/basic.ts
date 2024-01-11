@@ -1,6 +1,6 @@
 console.log("Your code goes here");
 
-function add(n1: number, n2: number, showResult: boolean, phrasa: string) {
+function adds(n1: number, n2: number, showResult: boolean, phrasa: string) {
   // jika mengggunakan javascript
   //   if (typeof n1 !== "number" && typeof n1 !== "number") {
   //     throw new Error("Incorect input!");
@@ -19,4 +19,4 @@ const number1 = 5;
 const number2 = 2.8;
 const showResult = true;
 const resultPhrase = "Result is : ";
-console.log(add(number1, number2, showResult, resultPhrase));
+console.log(adds(number1, number2, showResult, resultPhrase));
