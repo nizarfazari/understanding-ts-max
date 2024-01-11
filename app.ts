@@ -42,3 +42,10 @@ const addRestParams = (...numbers: number[]) => {
 
 const addNumbers = addRestParams(5, 10, 2);
 console.log(addNumbers);
+
+// Destructuring pada Array dan Object
+
+const [hobby1, hobby2, ...remainingHobbies] = hobbies;
+
+const { name: userNames, age } = person;
+console.log(userNames)
