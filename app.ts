@@ -3,8 +3,8 @@ const userName = "Nizar";
 // Function
 const addFunction = function () {};
 
-// Arrow Function
-const addArrowFunction = (a: number , b : number) => {
+// Arrow Function with default params
+const addArrowFunction = (a: number , b : number = 5) => {
   return a + b;
 };
 
