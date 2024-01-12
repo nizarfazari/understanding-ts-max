@@ -29,12 +29,31 @@ class ITDepartment extends Departement {
 }
 
 class AccountingDepartment extends Departement {
+  private lastReport: string;
+
+  // method getter harus mengembalikan sesuatu
+  public get mostRecentReport() {
+    if (this.lastReport) {
+      return this.lastReport;
+    }
+    throw new Error("No Report Found");
+  }
+
+  public set mostRecentReport(v: string) {
+    if (!v) {
+      throw new Error("Please pass in a valid value");
+    }
+    this.addReports(v);
+  }
+
   constructor(id: string, private reports: string[] = []) {
     super(id, "Accounting");
+    this.lastReport = reports[0];
   }
 
   addReports(text: string) {
     this.reports.push(text);
+    this.lastReport = text;
   }
 
   printReports() {
@@ -59,8 +78,10 @@ console.log(it);
 
 const accounting = new AccountingDepartment("4");
 accounting.addReports("asdas");
-accounting.addEmployee("Nizar")
-accounting.addEmployee("Fazari")
+accounting.mostRecentReport = "Year Final Report";
+console.log(accounting.mostRecentReport);
+accounting.addEmployee("Nizar");
+accounting.addEmployee("Fazari");
 console.log(accounting);
 
 // accounting.employee[2] = "Anna"; => jika ingin class tidak bisa di akses dari luar, tambahkan access modifier private pada propery

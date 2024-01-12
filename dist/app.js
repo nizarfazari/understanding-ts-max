@@ -25,12 +25,27 @@ class ITDepartment extends Departement {
     }
 }
 class AccountingDepartment extends Departement {
+    // method getter harus mengembalikan sesuatu
+    get mostRecentReport() {
+        if (this.lastReport) {
+            return this.lastReport;
+        }
+        throw new Error("No Report Found");
+    }
+    set mostRecentReport(v) {
+        if (!v) {
+            throw new Error("Please pass in a valid value");
+        }
+        this.addReports(v);
+    }
     constructor(id, reports = []) {
         super(id, "Accounting");
         this.reports = reports;
+        this.lastReport = reports[0];
     }
     addReports(text) {
         this.reports.push(text);
+        this.lastReport = text;
     }
     printReports() {
         console.log(this.reports);
@@ -50,6 +65,8 @@ it.printEmployeeInformation();
 console.log(it);
 const accounting = new AccountingDepartment("4");
 accounting.addReports("asdas");
+accounting.mostRecentReport = "";
+console.log(accounting.mostRecentReport);
 accounting.addEmployee("Nizar");
 accounting.addEmployee("Fazari");
 console.log(accounting);
