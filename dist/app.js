@@ -35,6 +35,12 @@ class AccountingDepartment extends Departement {
     printReports() {
         console.log(this.reports);
     }
+    addEmployee(name) {
+        if (name == "Nizar") {
+            return;
+        }
+        this.employee.push(name);
+    }
 }
 const it = new ITDepartment("2", ["Nizar"]);
 it.addEmployee("Nizar");
@@ -44,6 +50,8 @@ it.printEmployeeInformation();
 console.log(it);
 const accounting = new AccountingDepartment("4");
 accounting.addReports("asdas");
+accounting.addEmployee("Nizar");
+accounting.addEmployee("Fazari");
 console.log(accounting);
 // accounting.employee[2] = "Anna"; => jika ingin class tidak bisa di akses dari luar, tambahkan access modifier private pada propery
 // const accountingCoppy = { name : "asd" ,describe: accounting.describe };

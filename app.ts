@@ -1,5 +1,5 @@
 class Departement {
-  private employee: string[] = [];
+  protected employee: string[] = [];
 
   constructor(private readonly id: string, public name: string) {}
 
@@ -40,6 +40,13 @@ class AccountingDepartment extends Departement {
   printReports() {
     console.log(this.reports);
   }
+
+  addEmployee(name: string): void {
+    if (name == "Nizar") {
+      return;
+    }
+    this.employee.push(name);
+  }
 }
 
 const it = new ITDepartment("2", ["Nizar"]);
@@ -52,8 +59,9 @@ console.log(it);
 
 const accounting = new AccountingDepartment("4");
 accounting.addReports("asdas");
+accounting.addEmployee("Nizar")
+accounting.addEmployee("Fazari")
 console.log(accounting);
-
 
 // accounting.employee[2] = "Anna"; => jika ingin class tidak bisa di akses dari luar, tambahkan access modifier private pada propery
 // const accountingCoppy = { name : "asd" ,describe: accounting.describe };
