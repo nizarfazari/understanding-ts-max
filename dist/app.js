@@ -5,23 +5,27 @@ class Departement {
         this.name = name;
         this.employee = [];
     }
-    describe() {
-        console.log(`Department ( ${this.id} ) : ` + this.name);
-    }
     addEmployee(employee) {
         this.employee.push(employee);
+    }
+    static createEmployee(name) {
+        return { name: name };
     }
     printEmployeeInformation() {
         console.log(this.employee.length);
         console.log(this.employee);
     }
 }
+Departement.fiscalYear = 2020;
 class ITDepartment extends Departement {
     // selama tidak membuat konstruktor maka akan menggunakan constructor super class
     constructor(id, admins) {
         super(id, "IT");
         // this harus di tulis setelah super
         this.admins = admins;
+    }
+    describe() {
+        console.log("IT Department : " + this.id);
     }
 }
 class AccountingDepartment extends Departement {
@@ -31,6 +35,9 @@ class AccountingDepartment extends Departement {
             return this.lastReport;
         }
         throw new Error("No Report Found");
+    }
+    describe() {
+        console.log("Accounting Department : " + this.id);
     }
     set mostRecentReport(v) {
         if (!v) {
@@ -57,6 +64,8 @@ class AccountingDepartment extends Departement {
         this.employee.push(name);
     }
 }
+const employee1 = Departement.createEmployee("Nizar");
+console.log(employee1, Departement.fiscalYear);
 const it = new ITDepartment("2", ["Nizar"]);
 it.addEmployee("Nizar");
 it.addEmployee("Fazari");
@@ -65,7 +74,7 @@ it.printEmployeeInformation();
 console.log(it);
 const accounting = new AccountingDepartment("4");
 accounting.addReports("asdas");
-accounting.mostRecentReport = "";
+accounting.mostRecentReport = "Year Final Report";
 console.log(accounting.mostRecentReport);
 accounting.addEmployee("Nizar");
 accounting.addEmployee("Fazari");

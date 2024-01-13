@@ -1,14 +1,17 @@
-class Departement {
+abstract class Departement {
+  static fiscalYear = 2020;
   protected employee: string[] = [];
 
-  constructor(private readonly id: string, public name: string) {}
+  constructor(protected id: string, public name: string) {}
 
-  describe(this: Departement) {
-    console.log(`Department ( ${this.id} ) : ` + this.name);
-  }
+  abstract describe(this: Departement): void;
 
   addEmployee(employee: string) {
     this.employee.push(employee);
+  }
+
+  static createEmployee(name: string) {
+    return { name: name };
   }
 
   printEmployeeInformation() {
@@ -19,12 +22,24 @@ class Departement {
 
 class ITDepartment extends Departement {
   admins: string[];
-
+  private static instace: ITDepartment;
   // selama tidak membuat konstruktor maka akan menggunakan constructor super class
-  constructor(id: string, admins: string[]) {
+  private constructor(id: string, admins: string[]) {
     super(id, "IT");
     // this harus di tulis setelah super
     this.admins = admins;
+  }
+
+  describe(): void {
+    console.log("IT Department : " + this.id);
+  }
+
+  static getInstances() {
+    if (ITDepartment.instace) {
+      return this.instace;
+    }
+    this.instace = new ITDepartment("2", ["Nizar"]);
+    return this.instace;
   }
 }
 
@@ -37,6 +52,10 @@ class AccountingDepartment extends Departement {
       return this.lastReport;
     }
     throw new Error("No Report Found");
+  }
+
+  describe(): void {
+    console.log("Accounting Department : " + this.id);
   }
 
   public set mostRecentReport(v: string) {
@@ -68,8 +87,10 @@ class AccountingDepartment extends Departement {
   }
 }
 
-const it = new ITDepartment("2", ["Nizar"]);
+const employee1 = Departement.createEmployee("Nizar");
+console.log(employee1, Departement.fiscalYear);
 
+const it = ITDepartment.getInstances()
 it.addEmployee("Nizar");
 it.addEmployee("Fazari");
 it.describe();
