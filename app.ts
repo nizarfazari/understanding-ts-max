@@ -17,8 +17,6 @@ const e1: ElevatedEmployee = {
   startDate: new Date(),
 };
 
-
-
 // Instanceof Type Guards:
 type UknownEmployee = Employee | Admin;
 
@@ -39,7 +37,6 @@ class Car {
     console.log("Driving");
   }
 }
-
 
 class Truck {
   drive() {
@@ -90,8 +87,6 @@ function moveAnimal(animal: Animal) {
 
 moveAnimal({ type: "bird", flyingSpeed: 10 });
 
-
-
 //  Type Casting
 // default dari type ini adalah HTML element jadi haru di konversi terdapat 2 cara
 // const userInputElement = <HTMLInputElement>document.getElementById("input-user") ;
@@ -105,36 +100,28 @@ if (userInputElement) {
 
 // Index Properties
 // jika kita tidak tahu key yang akan di tambahkan itu apa tapi tahu typenya
-// misal nantinya terdapat sebuah object yang mana isinya itu 
+// misal nantinya terdapat sebuah object yang mana isinya itu
 // { email : 'not valid' email', username : 'must start character' }
 interface ErrorContainer {
   [prop: string]: string;
 }
 
-
-const errorBag :ErrorContainer = {
-  email : 'Not valid email',
-  username : 'Must character more than 1',
+const errorBag: ErrorContainer = {
+  email: "Not valid email",
+  username: "Must character more than 1",
   // kalo key-nya itu string, angka 1 masih dapat di masukan karena di konvert menjadi string oleh ts
-  1 : "ini juga bisa"
-}
+  1: "ini juga bisa",
+};
 
-
-
-
-
-
-// Function Overload
 // Union Types
 type Combinable = string | number;
 type Numeric = number | boolean;
 
 type Universal = Combinable | Numeric;
 
-
-
-function add(a: number, b:number) : number
-function add(a: string, b:string) : string
+// Function Overload
+function add(a: number, b: number): number;
+function add(a: string, b: string): string;
 
 function add(a: Combinable, b: Combinable) {
   if (typeof a == "string" || typeof b == "string") {
@@ -144,6 +131,28 @@ function add(a: Combinable, b: Combinable) {
 }
 
 // seperti ini akan error
-const res = add("Nizar" , "Fazari")
-res.split(' ')
+const res = add("Nizar", "Fazari");
+res.split(" ");
 
+// Optional Chaining & Coalescing operator
+const fetchUserData: {
+  id: number;
+  name: string;
+  job?: { title: string } | null; // job sekarang bisa undefined atau null
+} = {
+  id: 1,
+  name: "NIzar",
+  // job: { title: "SE" },
+};
+
+// Gunakan optional chaining untuk menghindari kesalahan jika nilai tersebut undefined atau null
+const jobTitle = fetchUserData?.job?.title;
+
+// Tampilkan hasilnya atau fallback ke nilai default jika undefined atau null
+console.log(jobTitle !== undefined ? jobTitle : "No Job Title");
+
+// Atau gunakan nullish coalescing operator (??)
+console.log(jobTitle ?? "No Job Title");
+
+// Gunakan && untuk menghindari kesalahan jika nilai tersebut undefined atau null
+console.log(fetchUserData && fetchUserData.job && fetchUserData.job.title);
