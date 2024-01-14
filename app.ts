@@ -1,3 +1,4 @@
+// Intersection Types
 type Admin = {
   name: string;
   privileges: string[];
@@ -16,19 +17,9 @@ const e1: ElevatedEmployee = {
   startDate: new Date(),
 };
 
-// Union Types
-type Combinable = string | number;
-type Numeric = number | boolean;
 
-type Universal = Combinable | Numeric;
 
-function add(a: Combinable, b: Combinable) {
-  if (typeof a == "string" || typeof b == "string") {
-    return a.toString() + b.toString();
-  }
-  return a + b;
-}
-
+// Instanceof Type Guards:
 type UknownEmployee = Employee | Admin;
 
 function printEmployee(emp: UknownEmployee) {
@@ -48,6 +39,7 @@ class Car {
     console.log("Driving");
   }
 }
+
 
 class Truck {
   drive() {
@@ -71,6 +63,7 @@ function useVechile(vechile: Vechile) {
   }
 }
 
+// Discriminated Unions
 interface Bird {
   type: "bird";
   flyingSpeed: number;
@@ -96,3 +89,61 @@ function moveAnimal(animal: Animal) {
 }
 
 moveAnimal({ type: "bird", flyingSpeed: 10 });
+
+
+
+//  Type Casting
+// default dari type ini adalah HTML element jadi haru di konversi terdapat 2 cara
+// const userInputElement = <HTMLInputElement>document.getElementById("input-user") ;
+const userInputElement = document.getElementById(
+  "input-user"
+) as HTMLInputElement;
+
+if (userInputElement) {
+  userInputElement.value = "Hiii bang";
+}
+
+// Index Properties
+// jika kita tidak tahu key yang akan di tambahkan itu apa tapi tahu typenya
+// misal nantinya terdapat sebuah object yang mana isinya itu 
+// { email : 'not valid' email', username : 'must start character' }
+interface ErrorContainer {
+  [prop: string]: string;
+}
+
+
+const errorBag :ErrorContainer = {
+  email : 'Not valid email',
+  username : 'Must character more than 1',
+  // kalo key-nya itu string, angka 1 masih dapat di masukan karena di konvert menjadi string oleh ts
+  1 : "ini juga bisa"
+}
+
+
+
+
+
+
+// Function Overload
+// Union Types
+type Combinable = string | number;
+type Numeric = number | boolean;
+
+type Universal = Combinable | Numeric;
+
+
+
+function add(a: number, b:number) : number
+function add(a: string, b:string) : string
+
+function add(a: Combinable, b: Combinable) {
+  if (typeof a == "string" || typeof b == "string") {
+    return a.toString() + b.toString();
+  }
+  return a + b;
+}
+
+// seperti ini akan error
+const res = add("Nizar" , "Fazari")
+res.split(' ')
+
