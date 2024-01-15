@@ -1,84 +1,22 @@
 "use strict";
-class Departement {
-    constructor(id, name) {
-        this.id = id;
-        this.name = name;
-        this.employee = [];
-    }
-    addEmployee(employee) {
-        this.employee.push(employee);
-    }
-    static createEmployee(name) {
-        return { name: name };
-    }
-    printEmployeeInformation() {
-        console.log(this.employee.length);
-        console.log(this.employee);
-    }
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+function Logger(constructor) {
+    console.log("Logging");
+    console.log(constructor);
 }
-Departement.fiscalYear = 2020;
-class ITDepartment extends Departement {
-    // selama tidak membuat konstruktor maka akan menggunakan constructor super class
-    constructor(id, admins) {
-        super(id, "IT");
-        // this harus di tulis setelah super
-        this.admins = admins;
+let Person = class Person {
+    constructor() {
+        this.name = "Nizar";
+        console.log("Creating Constructor");
     }
-    describe() {
-        console.log("IT Department : " + this.id);
-    }
-}
-class AccountingDepartment extends Departement {
-    // method getter harus mengembalikan sesuatu
-    get mostRecentReport() {
-        if (this.lastReport) {
-            return this.lastReport;
-        }
-        throw new Error("No Report Found");
-    }
-    describe() {
-        console.log("Accounting Department : " + this.id);
-    }
-    set mostRecentReport(v) {
-        if (!v) {
-            throw new Error("Please pass in a valid value");
-        }
-        this.addReports(v);
-    }
-    constructor(id, reports = []) {
-        super(id, "Accounting");
-        this.reports = reports;
-        this.lastReport = reports[0];
-    }
-    addReports(text) {
-        this.reports.push(text);
-        this.lastReport = text;
-    }
-    printReports() {
-        console.log(this.reports);
-    }
-    addEmployee(name) {
-        if (name == "Nizar") {
-            return;
-        }
-        this.employee.push(name);
-    }
-}
-const employee1 = Departement.createEmployee("Nizar");
-console.log(employee1, Departement.fiscalYear);
-const it = new ITDepartment("2", ["Nizar"]);
-it.addEmployee("Nizar");
-it.addEmployee("Fazari");
-it.describe();
-it.printEmployeeInformation();
-console.log(it);
-const accounting = new AccountingDepartment("4");
-accounting.addReports("asdas");
-accounting.mostRecentReport = "Year Final Report";
-console.log(accounting.mostRecentReport);
-accounting.addEmployee("Nizar");
-accounting.addEmployee("Fazari");
-console.log(accounting);
-// accounting.employee[2] = "Anna"; => jika ingin class tidak bisa di akses dari luar, tambahkan access modifier private pada propery
-// const accountingCoppy = { name : "asd" ,describe: accounting.describe };
-// accountingCoppy.describe(); => akan error karena mengacu pada Kelas Object accountingCoppy jadinya harus menambahkan sebuah property
+};
+Person = __decorate([
+    Logger
+], Person);
+const pers = new Person();
+console.log(pers);
