@@ -1,84 +1,72 @@
 "use strict";
-class Departement {
-    constructor(id, name) {
-        this.id = id;
-        this.name = name;
-        this.employee = [];
-    }
-    addEmployee(employee) {
-        this.employee.push(employee);
-    }
-    static createEmployee(name) {
-        return { name: name };
-    }
-    printEmployeeInformation() {
-        console.log(this.employee.length);
-        console.log(this.employee);
-    }
+const names = ["max", "nziar"];
+// kita bisa memberitahu typescript kalo hasilnya adalah string
+const promise = new Promise((res, rej) => {
+    setTimeout(() => {
+        res("this is done");
+    }, 2000);
+});
+promise.then((data) => {
+    data.split(" ");
+});
+// Creating Generic in Function
+function merge(objA, objB) {
+    return Object.assign(objA, objB);
 }
-Departement.fiscalYear = 2020;
-class ITDepartment extends Departement {
-    // selama tidak membuat konstruktor maka akan menggunakan constructor super class
-    constructor(id, admins) {
-        super(id, "IT");
-        // this harus di tulis setelah super
-        this.admins = admins;
+const mergeObj = merge({ name: "nizar", hobbies: ["test"] }, { age: 20 });
+const mergeObj2 = merge({ name: "nizar" }, { age: 20 });
+const mergeObj3 = merge({ name: "nizar" }, { age: 20 });
+console.log(mergeObj);
+console.log(mergeObj);
+function countAndDescribe(el = {}) {
+    let desc = "Got no value";
+    if (el.length === 1) {
+        desc = "got 1 element";
     }
-    describe() {
-        console.log("IT Department : " + this.id);
+    else if (el.length > 1) {
+        desc = "Got " + el.length + "element";
     }
+    return [el, desc];
 }
-class AccountingDepartment extends Departement {
-    // method getter harus mengembalikan sesuatu
-    get mostRecentReport() {
-        if (this.lastReport) {
-            return this.lastReport;
-        }
-        throw new Error("No Report Found");
+console.log(countAndDescribe("Hi there "));
+console.log(countAndDescribe());
+function getProperty(obj, key) {
+    return obj[key];
+}
+const user = {
+    id: 1,
+    name: "John",
+    email: "john@example.com",
+};
+console.log(getProperty(user, "name"));
+// class generic
+class DataStorage {
+    constructor() {
+        this.data = [];
     }
-    describe() {
-        console.log("Accounting Department : " + this.id);
+    addItem(item) {
+        this.data.push(item);
     }
-    set mostRecentReport(v) {
-        if (!v) {
-            throw new Error("Please pass in a valid value");
-        }
-        this.addReports(v);
-    }
-    constructor(id, reports = []) {
-        super(id, "Accounting");
-        this.reports = reports;
-        this.lastReport = reports[0];
-    }
-    addReports(text) {
-        this.reports.push(text);
-        this.lastReport = text;
-    }
-    printReports() {
-        console.log(this.reports);
-    }
-    addEmployee(name) {
-        if (name == "Nizar") {
+    removeItem(item) {
+        if (this.data.indexOf(item) === -1) {
             return;
         }
-        this.employee.push(name);
+        this.data.splice(this.data.indexOf(item), 1);
+    }
+    getItem() {
+        return [...this.data];
     }
 }
-const employee1 = Departement.createEmployee("Nizar");
-console.log(employee1, Departement.fiscalYear);
-const it = new ITDepartment("2", ["Nizar"]);
-it.addEmployee("Nizar");
-it.addEmployee("Fazari");
-it.describe();
-it.printEmployeeInformation();
-console.log(it);
-const accounting = new AccountingDepartment("4");
-accounting.addReports("asdas");
-accounting.mostRecentReport = "Year Final Report";
-console.log(accounting.mostRecentReport);
-accounting.addEmployee("Nizar");
-accounting.addEmployee("Fazari");
-console.log(accounting);
-// accounting.employee[2] = "Anna"; => jika ingin class tidak bisa di akses dari luar, tambahkan access modifier private pada propery
-// const accountingCoppy = { name : "asd" ,describe: accounting.describe };
-// accountingCoppy.describe(); => akan error karena mengacu pada Kelas Object accountingCoppy jadinya harus menambahkan sebuah property
+const textStorage = new DataStorage();
+textStorage.addItem("Nizar");
+textStorage.addItem("Faza");
+textStorage.removeItem("Nizar");
+console.log(textStorage);
+const numberStorage = new DataStorage();
+// tidak cocok untuk object  function ini lebih cocok pada type primitif
+// const objStorage = new DataStorage<object>()
+// const names1 = {name : 'max'}
+// objStorage.addItem(names1)
+// objStorage.addItem({name : 'maxasdas'})
+// objStorage.removeItem(names1)
+// console.log(objStorage)
