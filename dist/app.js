@@ -63,10 +63,13 @@ textStorage.addItem("Faza");
 textStorage.removeItem("Nizar");
 console.log(textStorage);
 const numberStorage = new DataStorage();
-// tidak cocok untuk object  function ini lebih cocok pada type primitif
-// const objStorage = new DataStorage<object>()
-// const names1 = {name : 'max'}
-// objStorage.addItem(names1)
-// objStorage.addItem({name : 'maxasdas'})
-// objStorage.removeItem(names1)
-// console.log(objStorage)
+function createCourseGoal(title, description, date) {
+    // partial membuat semua pilihan menjadi optional
+    let courseGoal = {};
+    courseGoal.title = title;
+    courseGoal.description = description;
+    courseGoal.compleUntil = date;
+    return courseGoal;
+}
+// tidak boleh di ganti hanya bisa di baca
+const names2 = ["nizar", "fazari"];

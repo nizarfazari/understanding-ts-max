@@ -91,3 +91,27 @@ const numberStorage = new DataStorage<number>();
 // objStorage.removeItem(names1)
 // console.log(objStorage)
 
+// Generic Utility
+interface CourseGoal {
+  title: string;
+  description: string;
+  compleUntil: Date;
+}
+
+function createCourseGoal(
+  title: string,
+  description: string,
+  date: Date
+): CourseGoal {
+    // partial membuat semua pilihan menjadi optional
+  let courseGoal: Partial<CourseGoal> = {};
+  courseGoal.title = title;
+  courseGoal.description = description;
+  courseGoal.compleUntil = date;
+
+  return courseGoal as CourseGoal;
+}
+
+
+// tidak boleh di ganti hanya bisa di baca
+const names2: Readonly<string[]> = ["nizar", "fazari"];
