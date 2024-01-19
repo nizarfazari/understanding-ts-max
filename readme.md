@@ -12,6 +12,7 @@ Halo temen" di sini saya mau sharing belajar typescript dari sumber udemy yang d
   - [Typescript Class](https://curved-walrus-b61.notion.site/Typescript-Compiler-8303034d719442ed92d873ed12e084a4)
  - [Advance Types ](https://curved-walrus-b61.notion.site/Advance-Types-9d54bb8bedb04475b37e770e4c99feef)
  - [Generic ](https://curved-walrus-b61.notion.site/Generics-76ad7f09675941c28ceeff2d29266bdc)
+ - [Decorator ](https://curved-walrus-b61.notion.site/Generics-76ad7f09675941c28ceeff2d29266bdc)
 ## Authors
 
 - [@nizarfazari](https://github.com/nizarfazari)
