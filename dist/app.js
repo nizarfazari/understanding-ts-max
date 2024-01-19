@@ -97,11 +97,13 @@ __decorate([
 new Product("asdsa", 2);
 new Product("asdsa", 4);
 function Autobind(target, methodName, descriptor) {
+    // menampung function asli
     const originalMethod = descriptor.value;
     const adjDecriptor = {
         configurable: true,
         enumerable: false,
         get() {
+            // this ini akan mengacu pada object tempat kita mendefinisakn bukan di event listener
             const boundFn = originalMethod.bind(this);
             return boundFn;
         },
@@ -124,3 +126,57 @@ p.showMessage();
 const button2 = document.querySelector("button");
 // karena addEventListener mengikat method showMessage sehingga this itu merefer ke addEventListerner
 button2 === null || button2 === void 0 ? void 0 : button2.addEventListener("click", p.showMessage);
+const registeredValidators = {};
+function Required(target, propName) {
+    registeredValidators[target.constructor.name] = Object.assign(Object.assign({}, registeredValidators[target.constructor.name]), { [propName]: ["required"] });
+}
+function PositiveNumber(target, propName) {
+    registeredValidators[target.constructor.name] = Object.assign(Object.assign({}, registeredValidators[target.constructor.name]), { [propName]: ["positive"] });
+}
+function validate(obj) {
+    const objValidatorConfig = registeredValidators[obj.constructor.name];
+    if (!objValidatorConfig) {
+        return true;
+    }
+    let isValid = true;
+    for (const prop in objValidatorConfig) {
+        for (const validator of objValidatorConfig[prop]) {
+            switch (validator) {
+                case "required":
+                    isValid = isValid && !!obj[prop];
+                    break;
+                case "positive":
+                    isValid = isValid && obj[prop] > 0;
+                    break;
+            }
+        }
+    }
+    return isValid;
+}
+class Course {
+    constructor(title, price) {
+        this.title = title;
+        this.price = price;
+    }
+}
+__decorate([
+    Required
+], Course.prototype, "title", void 0);
+__decorate([
+    PositiveNumber
+], Course.prototype, "price", void 0);
+const courseForm = document.querySelector("form");
+courseForm === null || courseForm === void 0 ? void 0 : courseForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const titleEl = document.getElementById("title");
+    const priceEl = document.getElementById("price");
+    console.log(priceEl);
+    const title = titleEl.value;
+    const price = +priceEl.value;
+    const createCourse = new Course(title, price);
+    if (!validate(createCourse)) {
+        alert("Invalid input, pls try again");
+        return;
+    }
+    console.log(createCourse);
+});

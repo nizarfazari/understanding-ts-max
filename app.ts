@@ -107,11 +107,13 @@ function Autobind(
   methodName: string,
   descriptor: PropertyDescriptor
 ) {
+  // menampung function asli
   const originalMethod = descriptor.value;
   const adjDecriptor: PropertyDescriptor = {
     configurable: true,
     enumerable: false,
     get() {
+      // this ini akan mengacu pada object tempat kita mendefinisakn bukan di event listener
       const boundFn = originalMethod.bind(this);
       return boundFn;
     },
@@ -135,3 +137,76 @@ p.showMessage();
 const button2 = document.querySelector("button");
 // karena addEventListener mengikat method showMessage sehingga this itu merefer ke addEventListerner
 button2?.addEventListener("click", p.showMessage);
+
+interface ValidatorConfig {
+  [property: string]: {
+    [validateableProp: string]: string[]; // ['required' , 'positive']
+  };
+}
+
+const registeredValidators: ValidatorConfig = {};
+
+function Required(target: any, propName: string) {
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name],
+    [propName]: ["required"],
+  };
+}
+function PositiveNumber(target: any, propName: string) {
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name],
+    [propName]: ["positive"],
+  };
+}
+function validate(obj: any) {
+  const objValidatorConfig = registeredValidators[obj.constructor.name];
+  if (!objValidatorConfig) {
+    return true;
+  }
+
+  let isValid = true;
+  for (const prop in objValidatorConfig) {
+    for (const validator of objValidatorConfig[prop]) {
+      switch (validator) {
+        case "required":
+          isValid = isValid && !!obj[prop];
+          break;
+        case "positive":
+          isValid = isValid && obj[prop] > 0;
+          break;
+      }
+    }
+  }
+
+  return isValid;
+}
+
+class Course {
+  @Required
+  title: string;
+
+  @PositiveNumber
+  price: number;
+
+  constructor(title: string, price: number) {
+    this.title = title;
+    this.price = price;
+  }
+}
+
+const courseForm = document.querySelector("form");
+courseForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const titleEl = document.getElementById("title") as HTMLInputElement;
+  const priceEl = document.getElementById("price") as HTMLInputElement;
+  console.log(priceEl);
+  const title = titleEl.value;
+  const price = +priceEl.value;
+
+  const createCourse = new Course(title, price);
+  if (!validate(createCourse)) {
+    alert("Invalid input, pls try again");
+    return;
+  }
+  console.log(createCourse);
+});
