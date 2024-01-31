@@ -1,6 +1,6 @@
 {
   "exclude": ["node_modules", "typescript-basic/*" ,"typescript-compiler/* " ,"typescript-generation/* "],
-  "include": ["./app.ts"],
+  "include": ["./drag-n-drop/app.ts"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
