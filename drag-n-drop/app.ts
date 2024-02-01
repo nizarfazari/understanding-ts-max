@@ -1,3 +1,44 @@
+// validation
+interface Validation {
+  value: string | number;
+  required: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+}
+
+function validate(validateInput: Validation) {
+  let isValid = true;
+  if (validateInput.required) {
+    // karena jika tidak sama dengan 0 adalah true
+    isValid = isValid && validateInput.value.toString().trim().length !== 0;
+  }
+  if (
+    validateInput.minLength != null &&
+    typeof validateInput.value === "string"
+  ) {
+    isValid = isValid && validateInput.value.length >= validateInput.minLength;
+  }
+  if (
+    validateInput.maxLength != null &&
+    typeof validateInput.value === "string"
+  ) {
+    isValid = isValid && validateInput.value.length >= validateInput.maxLength;
+  }
+
+  if (validateInput.min != null && typeof validateInput.value === "number") {
+    isValid = isValid && validateInput.value >= validateInput.min;
+  }
+
+  if (validateInput.max != null && typeof validateInput.value === "number") {
+    isValid = isValid && validateInput.value <= validateInput.max;
+  }
+
+  return isValid;
+}
+
+// decorator autobind
 function Autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   const adjDescriptor: PropertyDescriptor = {
@@ -53,10 +94,24 @@ class ProjectInput {
     const description = this.descriptionInputEl.value;
     const people = this.peopleInputEl.value;
 
+    const titleValidate: Validation = {
+      value: title,
+      required: true,
+    };
+    const descriptionValidate: Validation = {
+      value: description,
+      required: true,
+      minLength: 5,
+    };
+    const peopleValidate: Validation = {
+      value: +people,
+      required: true,
+    };
+
     if (
-      title.trim().length === 0 ||
-      description.trim().length === 0 ||
-      people.trim().length === 0
+      !validate(titleValidate) ||
+      !validate(descriptionValidate) ||
+      !validate(peopleValidate)
     ) {
       alert("Invalid input , please try again");
       return;
