@@ -51,18 +51,53 @@ function Autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
   return adjDescriptor;
 }
 
-class ProjectList{
+//Project State Management
+class ProjectState {
+  private listeners: any[] = [];
+  private projects: any[] = [];
+  private static instace: ProjectState;
+
+  private constructor() {}
+
+  // ini membuat singleton
+  static getInstaces() {
+    if (this.instace) {
+      return this.instace;
+    }
+
+    return (this.instace = new ProjectState());
+  }
+
+  addListener(listenerFn: Function) {
+    this.listeners.push(listenerFn);
+  }
+
+  addProject(title: string, description: string, numOfPeople: number) {
+    const newProject = {
+      id: Math.random().toString(),
+      title: title,
+      description: description,
+      people: numOfPeople,
+    };
+    this.projects.push(newProject);
+    for (const listenerFn of this.listeners) {
+      listenerFn(this.projects.slice());
+    }
+  }
+}
+
+class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLFormElement;
+  assignedProject: any[];
 
-
-  constructor(private type : 'active' | 'finished') {
+  constructor(private type: "active" | "finished") {
     this.templateElement = document.getElementById(
       "project-list"
     ) as HTMLTemplateElement;
     this.hostElement = document.getElementById("app") as HTMLDivElement;
-
+    this.assignedProject = [];
     // mennciptakan salinan node
     const importedNode = document.importNode(
       this.templateElement.content,
@@ -71,24 +106,38 @@ class ProjectList{
     // mengambil element pertama saja
     this.element = importedNode.firstElementChild as HTMLFormElement;
     this.element.id = `${this.type}-projects`;
-    this.attach()
-    this.renderContent()
+
+    projectState.addListener((projects: any[]) => {
+      this.assignedProject = projects;
+      this.renderProjects();
+    });
+    this.attach();
+    this.renderContent();
+  }
+
+  private renderProjects() {
+    const listEl = document.getElementById(
+      `${this.type}-projects-list`
+    ) as HTMLUListElement;
+    for (const prjItem of this.assignedProject) {
+      const listItem = document.createElement("li");
+      listItem.textContent = prjItem.title;
+      listEl.append(listItem);
+    }
   }
 
   private renderContent() {
-    const listId = `${this.type}-projects-list`
-    this.element.querySelector('ul')!.id = listId
-    this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + 'PROJECTS'
-
+    const listId = `${this.type}-projects-list`;
+    this.element.querySelector("ul")!.id = listId;
+    this.element.querySelector("h2")!.textContent =
+      this.type.toUpperCase() + "PROJECTS";
   }
 
-
-  private attach(){
-    console.log(this.element)
-    this.hostElement.insertAdjacentElement('beforeend', this.element)
+  private attach() {
+    console.log(this.element);
+    this.hostElement.insertAdjacentElement("beforeend", this.element);
   }
 }
-
 
 class ProjectInput {
   templateElement: HTMLTemplateElement;
@@ -171,7 +220,7 @@ class ProjectInput {
     const userInput = this.gatherUserInput();
     if (Array.isArray(userInput)) {
       const [title, description, people] = userInput;
-      console.log(title, description, people);
+      projectState.addProject(title, description, people);
       this.clearInputs();
     }
   }
@@ -186,6 +235,7 @@ class ProjectInput {
   }
 }
 
+const projectState = ProjectState.getInstaces();
 const projectImput = new ProjectInput();
-const projectList = new ProjectList('active');
-const projectList2 = new ProjectList('finished');
+const projectList = new ProjectList("active");
+const projectList2 = new ProjectList("finished");

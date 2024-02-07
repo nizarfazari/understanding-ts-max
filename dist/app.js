@@ -39,27 +39,70 @@ function Autobind(_1, _2, descriptor) {
     };
     return adjDescriptor;
 }
+//Project State Management
+class ProjectState {
+    constructor() {
+        this.listeners = [];
+        this.projects = [];
+    }
+    // ini membuat singleton
+    static getInstaces() {
+        if (this.instace) {
+            return this.instace;
+        }
+        return (this.instace = new ProjectState());
+    }
+    addListener(listenerFn) {
+        this.listeners.push(listenerFn);
+    }
+    addProject(title, description, numOfPeople) {
+        const newProject = {
+            id: Math.random().toString(),
+            title: title,
+            description: description,
+            people: numOfPeople,
+        };
+        this.projects.push(newProject);
+        for (const listenerFn of this.listeners) {
+            listenerFn(this.projects.slice());
+        }
+    }
+}
 class ProjectList {
     constructor(type) {
         this.type = type;
         this.templateElement = document.getElementById("project-list");
         this.hostElement = document.getElementById("app");
+        this.assignedProject = [];
         // mennciptakan salinan node
         const importedNode = document.importNode(this.templateElement.content, true);
         // mengambil element pertama saja
         this.element = importedNode.firstElementChild;
         this.element.id = `${this.type}-projects`;
+        projectState.addListener((projects) => {
+            this.assignedProject = projects;
+            this.renderProjects();
+        });
         this.attach();
         this.renderContent();
     }
+    renderProjects() {
+        const listEl = document.getElementById(`${this.type}-projects-list`);
+        for (const prjItem of this.assignedProject) {
+            const listItem = document.createElement("li");
+            listItem.textContent = prjItem.title;
+            listEl.append(listItem);
+        }
+    }
     renderContent() {
         const listId = `${this.type}-projects-list`;
-        this.element.querySelector('ul').id = listId;
-        this.element.querySelector('h2').textContent = this.type.toUpperCase() + 'PROJECTS';
+        this.element.querySelector("ul").id = listId;
+        this.element.querySelector("h2").textContent =
+            this.type.toUpperCase() + "PROJECTS";
     }
     attach() {
         console.log(this.element);
-        this.hostElement.insertAdjacentElement('beforeend', this.element);
+        this.hostElement.insertAdjacentElement("beforeend", this.element);
     }
 }
 class ProjectInput {
@@ -115,7 +158,7 @@ class ProjectInput {
         const userInput = this.gatherUserInput();
         if (Array.isArray(userInput)) {
             const [title, description, people] = userInput;
-            console.log(title, description, people);
+            projectState.addProject(title, description, people);
             this.clearInputs();
         }
     }
@@ -130,6 +173,7 @@ class ProjectInput {
 __decorate([
     Autobind
 ], ProjectInput.prototype, "submitHandler", null);
+const projectState = ProjectState.getInstaces();
 const projectImput = new ProjectInput();
-const projectList = new ProjectList('active');
-const projectList2 = new ProjectList('finished');
+const projectList = new ProjectList("active");
+const projectList2 = new ProjectList("finished");
