@@ -51,10 +51,25 @@ function Autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
   return adjDescriptor;
 }
 
+enum ProjectStatus {
+  Active,
+  Finished,
+}
+
+class Project {
+  constructor(
+    public id: string,
+    public title: string,
+    public description: string,
+    public people: number,
+    public status: ProjectStatus
+  ) {}
+}
+
 //Project State Management
 class ProjectState {
   private listeners: any[] = [];
-  private projects: any[] = [];
+  private projects: Project[] = [];
   private static instace: ProjectState;
 
   private constructor() {}
@@ -73,12 +88,13 @@ class ProjectState {
   }
 
   addProject(title: string, description: string, numOfPeople: number) {
-    const newProject = {
-      id: Math.random().toString(),
-      title: title,
-      description: description,
-      people: numOfPeople,
-    };
+    const newProject = new Project(
+      Math.random().toString(),
+      title,
+      description,
+      numOfPeople,
+      ProjectStatus.Active
+    );
     this.projects.push(newProject);
     for (const listenerFn of this.listeners) {
       listenerFn(this.projects.slice());
@@ -90,7 +106,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLFormElement;
-  assignedProject: any[];
+  assignedProject: Project[];
 
   constructor(private type: "active" | "finished") {
     this.templateElement = document.getElementById(
@@ -108,6 +124,7 @@ class ProjectList {
     this.element.id = `${this.type}-projects`;
 
     projectState.addListener((projects: any[]) => {
+      // const relevantProjects = projects.filter(prj => prj.status === ProjectStatus.Active)
       this.assignedProject = projects;
       this.renderProjects();
     });
