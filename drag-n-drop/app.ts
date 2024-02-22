@@ -56,6 +56,7 @@ enum ProjectStatus {
   Finished,
 }
 
+
 class Project {
   constructor(
     public id: string,
@@ -66,9 +67,11 @@ class Project {
   ) {}
 }
 
+
+type Listener = (items : Project[]) => void
 //Project State Management
 class ProjectState {
-  private listeners: any[] = [];
+  private listeners: Listener[] = [];
   private projects: Project[] = [];
   private static instace: ProjectState;
 
@@ -83,7 +86,7 @@ class ProjectState {
     return (this.instace = new ProjectState());
   }
 
-  addListener(listenerFn: Function) {
+  addListener(listenerFn: Listener) {
     this.listeners.push(listenerFn);
   }
 
@@ -123,9 +126,14 @@ class ProjectList {
     this.element = importedNode.firstElementChild as HTMLFormElement;
     this.element.id = `${this.type}-projects`;
 
-    projectState.addListener((projects: any[]) => {
-      // const relevantProjects = projects.filter(prj => prj.status === ProjectStatus.Active)
-      this.assignedProject = projects;
+    projectState.addListener((projects: Project[]) => {
+      const relevantProjects = projects.filter(prj =>  {
+        if(this.type === 'active'){
+          return prj.status === ProjectStatus.Active
+        }
+        return prj.status === ProjectStatus.Finished
+      })
+      this.assignedProject = relevantProjects;
       this.renderProjects();
     });
     this.attach();
@@ -136,6 +144,8 @@ class ProjectList {
     const listEl = document.getElementById(
       `${this.type}-projects-list`
     ) as HTMLUListElement;
+    // mengsanitasi file sebelumnya
+    listEl.innerHTML = ""
     for (const prjItem of this.assignedProject) {
       const listItem = document.createElement("li");
       listItem.textContent = prjItem.title;
