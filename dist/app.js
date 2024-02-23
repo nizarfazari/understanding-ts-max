@@ -39,6 +39,24 @@ function Autobind(_1, _2, descriptor) {
     };
     return adjDescriptor;
 }
+// Component Base Class
+class Component {
+    constructor(templateId, hostElementId, insertAtStart, newElementId) {
+        this.templateElement = document.getElementById(templateId);
+        this.hostElement = document.getElementById(hostElementId);
+        // mennciptakan salinan node
+        const importedNode = document.importNode(this.templateElement.content, true);
+        // mengambil element pertama saja
+        this.element = importedNode.firstElementChild;
+        if (newElementId) {
+            this.element.id = newElementId;
+        }
+        this.attach(insertAtStart);
+    }
+    attach(insertAtStart) {
+        this.hostElement.insertAdjacentElement(insertAtStart ? "afterbegin" : "beforeend", this.element);
+    }
+}
 var ProjectStatus;
 (function (ProjectStatus) {
     ProjectStatus[ProjectStatus["Active"] = 0] = "Active";
@@ -53,10 +71,18 @@ class Project {
         this.status = status;
     }
 }
-//Project State Management
-class ProjectState {
+class State {
     constructor() {
         this.listeners = [];
+    }
+    addListener(listenerFn) {
+        this.listeners.push(listenerFn);
+    }
+}
+//Project State Management
+class ProjectState extends State {
+    constructor() {
+        super();
         this.projects = [];
     }
     // ini membuat singleton
@@ -66,9 +92,6 @@ class ProjectState {
         }
         return (this.instace = new ProjectState());
     }
-    addListener(listenerFn) {
-        this.listeners.push(listenerFn);
-    }
     addProject(title, description, numOfPeople) {
         const newProject = new Project(Math.random().toString(), title, description, numOfPeople, ProjectStatus.Active);
         this.projects.push(newProject);
@@ -77,20 +100,18 @@ class ProjectState {
         }
     }
 }
-class ProjectList {
+class ProjectList extends Component {
     constructor(type) {
+        super("project-list", "app", false, `${type}-projects`);
         this.type = type;
-        this.templateElement = document.getElementById("project-list");
-        this.hostElement = document.getElementById("app");
         this.assignedProject = [];
-        // mennciptakan salinan node
-        const importedNode = document.importNode(this.templateElement.content, true);
-        // mengambil element pertama saja
-        this.element = importedNode.firstElementChild;
-        this.element.id = `${this.type}-projects`;
+        this.configure();
+        this.renderContent();
+    }
+    configure() {
         projectState.addListener((projects) => {
-            const relevantProjects = projects.filter(prj => {
-                if (this.type === 'active') {
+            const relevantProjects = projects.filter((prj) => {
+                if (this.type === "active") {
                     return prj.status === ProjectStatus.Active;
                 }
                 return prj.status === ProjectStatus.Finished;
@@ -98,8 +119,6 @@ class ProjectList {
             this.assignedProject = relevantProjects;
             this.renderProjects();
         });
-        this.attach();
-        this.renderContent();
     }
     renderProjects() {
         const listEl = document.getElementById(`${this.type}-projects-list`);
@@ -117,26 +136,18 @@ class ProjectList {
         this.element.querySelector("h2").textContent =
             this.type.toUpperCase() + "PROJECTS";
     }
-    attach() {
-        console.log(this.element);
-        this.hostElement.insertAdjacentElement("beforeend", this.element);
-    }
 }
-class ProjectInput {
+class ProjectInput extends Component {
     constructor() {
-        // mengambil element html
-        this.templateElement = document.getElementById("project-input");
-        this.hostElement = document.getElementById("app");
-        // mennciptakan salinan node
-        const importedNode = document.importNode(this.templateElement.content, true);
-        // mengambil element pertama saja
-        this.element = importedNode.firstElementChild;
-        this.element.id = "user-input";
+        super("project-input", "app", true, "user-input");
         this.titleInputEl = this.element.querySelector("#title");
         this.descriptionInputEl = this.element.querySelector("#description");
         this.peopleInputEl = this.element.querySelector("#people");
         this.configure();
-        this.attach();
+    }
+    renderContent() { }
+    configure() {
+        this.element.addEventListener("submit", this.submitHandler);
     }
     gatherUserInput() {
         const title = this.titleInputEl.value;
@@ -178,13 +189,6 @@ class ProjectInput {
             projectState.addProject(title, description, people);
             this.clearInputs();
         }
-    }
-    configure() {
-        this.element.addEventListener("submit", this.submitHandler);
-    }
-    attach() {
-        // menyisipkan ke dalam hostElement yang idnya pada app
-        this.hostElement.insertAdjacentElement("afterbegin", this.element);
     }
 }
 __decorate([
