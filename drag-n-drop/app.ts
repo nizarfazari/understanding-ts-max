@@ -194,6 +194,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
 
 class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
   private project: Project;
+
   constructor(hostId: string, project: Project) {
     super("single-project", hostId, false, project.id);
     this.project = project;
@@ -202,6 +203,13 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     this.renderContent();
   }
 
+  get person(){
+    if(this.project.people === 1){
+      return '1 person'
+    }else {
+      return `${this.project.people} persons`
+    }
+  }
 
   configure(): void {}
 
@@ -210,7 +218,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     console.log(this.project)
     this.element.querySelector("h2")!.textContent = this.project.title;
     this.element.querySelector("h3")!.textContent =
-      this.project.people.toString();
+      this.person + ' assigned';
     this.element.querySelector("p")!.textContent = this.project.description;
   }
 }
