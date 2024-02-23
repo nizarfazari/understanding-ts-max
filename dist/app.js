@@ -125,9 +125,7 @@ class ProjectList extends Component {
         // mengsanitasi file sebelumnya
         listEl.innerHTML = "";
         for (const prjItem of this.assignedProject) {
-            const listItem = document.createElement("li");
-            listItem.textContent = prjItem.title;
-            listEl.append(listItem);
+            new ProjectItem(this.element.querySelector('ul').id, prjItem);
         }
     }
     renderContent() {
@@ -135,6 +133,23 @@ class ProjectList extends Component {
         this.element.querySelector("ul").id = listId;
         this.element.querySelector("h2").textContent =
             this.type.toUpperCase() + "PROJECTS";
+    }
+}
+class ProjectItem extends Component {
+    constructor(hostId, project) {
+        super("single-project", hostId, false, project.id);
+        this.project = project;
+        this.configure();
+        this.renderContent();
+    }
+    configure() { }
+    renderContent() {
+        console.log(this.element.querySelector("h2"));
+        console.log(this.project);
+        this.element.querySelector("h2").textContent = this.project.title;
+        this.element.querySelector("h3").textContent =
+            this.project.people.toString();
+        this.element.querySelector("p").textContent = this.project.description;
     }
 }
 class ProjectInput extends Component {

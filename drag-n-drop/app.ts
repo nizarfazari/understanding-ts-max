@@ -117,16 +117,13 @@ class State<T> {
   }
 }
 
-
 //Project State Management
-class ProjectState extends State<Project>{
-
-
+class ProjectState extends State<Project> {
   private projects: Project[] = [];
   private static instace: ProjectState;
 
   private constructor() {
-    super()
+    super();
   }
 
   // ini membuat singleton
@@ -137,8 +134,6 @@ class ProjectState extends State<Project>{
 
     return (this.instace = new ProjectState());
   }
-
-
 
   addProject(title: string, description: string, numOfPeople: number) {
     const newProject = new Project(
@@ -185,9 +180,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     // mengsanitasi file sebelumnya
     listEl.innerHTML = "";
     for (const prjItem of this.assignedProject) {
-      const listItem = document.createElement("li");
-      listItem.textContent = prjItem.title;
-      listEl.append(listItem);
+      new ProjectItem(this.element.querySelector('ul')!.id, prjItem)
     }
   }
 
@@ -196,6 +189,29 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     this.element.querySelector("ul")!.id = listId;
     this.element.querySelector("h2")!.textContent =
       this.type.toUpperCase() + "PROJECTS";
+  }
+}
+
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+  private project: Project;
+  constructor(hostId: string, project: Project) {
+    super("single-project", hostId, false, project.id);
+    this.project = project;
+
+    this.configure();
+    this.renderContent();
+  }
+
+
+  configure(): void {}
+
+  renderContent(): void {
+    console.log(this.element.querySelector("h2"))
+    console.log(this.project)
+    this.element.querySelector("h2")!.textContent = this.project.title;
+    this.element.querySelector("h3")!.textContent =
+      this.project.people.toString();
+    this.element.querySelector("p")!.textContent = this.project.description;
   }
 }
 
