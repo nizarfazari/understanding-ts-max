@@ -125,7 +125,7 @@ class ProjectList extends Component {
         // mengsanitasi file sebelumnya
         listEl.innerHTML = "";
         for (const prjItem of this.assignedProject) {
-            new ProjectItem(this.element.querySelector('ul').id, prjItem);
+            new ProjectItem(this.element.querySelector("ul").id, prjItem);
         }
     }
     renderContent() {
@@ -144,22 +144,36 @@ class ProjectItem extends Component {
     }
     get person() {
         if (this.project.people === 1) {
-            return '1 person';
+            return "1 person";
         }
         else {
             return `${this.project.people} persons`;
         }
     }
-    configure() { }
+    dragStartHandler(event) {
+        console.log(event);
+    }
+    dragEndHandler(event) {
+        console.log('dragend');
+    }
+    configure() {
+        this.element.addEventListener("dragstart", this.dragStartHandler);
+        this.element.addEventListener("dragend", this.dragEndHandler);
+    }
     renderContent() {
         console.log(this.element.querySelector("h2"));
         console.log(this.project);
         this.element.querySelector("h2").textContent = this.project.title;
-        this.element.querySelector("h3").textContent =
-            this.person + ' assigned';
+        this.element.querySelector("h3").textContent = this.person + " assigned";
         this.element.querySelector("p").textContent = this.project.description;
     }
 }
+__decorate([
+    Autobind
+], ProjectItem.prototype, "dragStartHandler", null);
+__decorate([
+    Autobind
+], ProjectItem.prototype, "dragEndHandler", null);
 class ProjectInput extends Component {
     constructor() {
         super("project-input", "app", true, "user-input");

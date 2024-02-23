@@ -1,3 +1,15 @@
+// Drag n Drop Interfaces
+interface Draggable {
+  dragStartHandler(event: DragEvent): void;
+  dragEndHandler(event: DragEvent): void;
+}
+
+interface DragTarget {
+  dragOverHandler(event: DragEvent): void;
+  dropHandler(event: DragEvent): void;
+  dragLeaveHanlder(event: DragEvent): void;
+}
+
 // validation
 interface Validation {
   value: string | number;
@@ -180,7 +192,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     // mengsanitasi file sebelumnya
     listEl.innerHTML = "";
     for (const prjItem of this.assignedProject) {
-      new ProjectItem(this.element.querySelector('ul')!.id, prjItem)
+      new ProjectItem(this.element.querySelector("ul")!.id, prjItem);
     }
   }
 
@@ -192,7 +204,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
   }
 }
 
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem
+  extends Component<HTMLUListElement, HTMLLIElement>
+  implements Draggable
+{
   private project: Project;
 
   constructor(hostId: string, project: Project) {
@@ -203,22 +218,36 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     this.renderContent();
   }
 
-  get person(){
-    if(this.project.people === 1){
-      return '1 person'
-    }else {
-      return `${this.project.people} persons`
+  get person() {
+    if (this.project.people === 1) {
+      return "1 person";
+    } else {
+      return `${this.project.people} persons`;
     }
   }
 
-  configure(): void {}
+  
+  @Autobind
+  dragStartHandler(event: DragEvent): void {
+    console.log(event)
+  }
+
+  @Autobind
+  dragEndHandler(event: DragEvent): void {
+    console.log('dragend')
+  }
+
+
+  configure(): void {
+    this.element.addEventListener("dragstart", this.dragStartHandler);
+    this.element.addEventListener("dragend", this.dragEndHandler)
+  }
 
   renderContent(): void {
-    console.log(this.element.querySelector("h2"))
-    console.log(this.project)
+    console.log(this.element.querySelector("h2"));
+    console.log(this.project);
     this.element.querySelector("h2")!.textContent = this.project.title;
-    this.element.querySelector("h3")!.textContent =
-      this.person + ' assigned';
+    this.element.querySelector("h3")!.textContent = this.person + " assigned";
     this.element.querySelector("p")!.textContent = this.project.description;
   }
 }
