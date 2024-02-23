@@ -156,13 +156,29 @@ class ProjectState extends State<Project> {
       ProjectStatus.Active
     );
     this.projects.push(newProject);
+    this.updateListners()
+  }
+
+  moveProject(projectId : string,newStatus : ProjectStatus){
+    const project =this.projects.find(prj => prj.id === projectId)
+    if(project){
+      project.status = newStatus
+      this.updateListners()
+    }
+  }
+
+
+  private updateListners(){
     for (const listenerFn of this.listeners) {
       listenerFn(this.projects.slice());
     }
   }
 }
 
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList
+  extends Component<HTMLDivElement, HTMLElement>
+  implements DragTarget
+{
   assignedProject: Project[];
 
   constructor(private type: "active" | "finished") {
@@ -172,7 +188,30 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     this.renderContent();
   }
 
+  @Autobind
+  dragOverHandler(event: DragEvent): void {
+    if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+      event.preventDefault()
+      const listEl = this.element.querySelector("ul")!;
+      listEl.classList.add("droppable");
+    }
+  }
+  @Autobind
+  dropHandler(event: DragEvent): void {
+    const prjId = event.dataTransfer!.getData("text/plain") 
+    projectState.moveProject(prjId,  this.type === "active" ? ProjectStatus.Active : ProjectStatus.Finished )
+  }
+  @Autobind
+  dragLeaveHanlder(event: DragEvent): void {
+    const listEl = this.element.querySelector("ul")!;
+    listEl.classList.remove("droppable");
+  }
+
   configure(): void {
+    this.element.addEventListener("dragover", this.dragOverHandler);
+    this.element.addEventListener("dragleave", this.dragLeaveHanlder);
+    this.element.addEventListener("drop", this.dropHandler);
+
     projectState.addListener((projects: Project[]) => {
       const relevantProjects = projects.filter((prj) => {
         if (this.type === "active") {
@@ -226,21 +265,21 @@ class ProjectItem
     }
   }
 
-  
   @Autobind
   dragStartHandler(event: DragEvent): void {
-    console.log(event)
+    event.dataTransfer!.setData("text/plain", this.project.id);
+    event.dataTransfer!.effectAllowed = 'move'
+    console.log(event);
   }
 
   @Autobind
   dragEndHandler(event: DragEvent): void {
-    console.log('dragend')
+    console.log("dragend");
   }
-
 
   configure(): void {
     this.element.addEventListener("dragstart", this.dragStartHandler);
-    this.element.addEventListener("dragend", this.dragEndHandler)
+    this.element.addEventListener("dragend", this.dragEndHandler);
   }
 
   renderContent(): void {
